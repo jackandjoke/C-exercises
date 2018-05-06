@@ -2,6 +2,7 @@
 #include<string>
 #include<istream>
 #include<ostream>
+#include<fstream>
 
 struct Sales_data;
 std::istream & read(std::istream &in, Sales_data &rhs);
@@ -56,12 +57,22 @@ std::ostream & print(std::ostream &os, const Sales_data &rhs){
 
 
 
-int main(){
-    Sales_data total(std::cin);
+int main(int argc, char *argv[]){
+    if(argc != 2){
+        std::cout << "Usage: ./8.6 <filename>\n";
+        return 1;
+    }
+    std::ifstream ifs(argv[1]);
 
-    if(std::cin){
-        Sales_data trans(std::cin);
-        while(std::cin){
+    if(!ifs){
+        std::cerr << "Cannot open file " << argv[1] <<"\n";
+        return 1;
+    }
+    Sales_data total(ifs);
+
+    if(ifs){
+        Sales_data trans(ifs);
+        while(ifs){
             if(trans.isbn() == total.isbn()){
                 total.combine(trans);
             }else{
@@ -69,7 +80,7 @@ int main(){
                 total = trans;
             }
             //read(std::cin,trans);
-            trans = Sales_data (std::cin);
+            trans = Sales_data (ifs);
         }
         print(std::cout,total);
     }else{
