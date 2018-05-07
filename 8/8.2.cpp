@@ -8,8 +8,8 @@ std::istream & read( std::istream &is){
     std::string data;
     while(!is.eof()){
         is >> data;
-        if(is.eof()) break;
         std::cout << data << "\n";
+        if(is.eof()) break;
     }
     is.clear();
     return is;

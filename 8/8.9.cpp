@@ -1,6 +1,7 @@
 #include<istream>
 #include<iostream>
 #include<string>
+#include<sstream>
 
 
 
@@ -13,4 +14,11 @@ std::istream & read( std::istream &is){
     }
     is.clear();
     return is;
+}
+
+
+int main(){
+    std::stringstream s("Hello World, your majesty!"); 
+    read(s);
+    return 0;
 }
