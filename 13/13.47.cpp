@@ -96,12 +96,14 @@ SimStr::SimStr(const char *ca){
     first_free = cap = data.second;
 }
 SimStr::SimStr(const SimStr& rhs){
+    cout << "in copy constructor !\n";
     auto data = alloc_n_copy(rhs.begin(),rhs.end());
     elements = data.first;
     first_free = cap = data.second;
 }
 
 SimStr& SimStr::operator=(const SimStr &rhs){
+    cout << "in operator = function !!!\n";
     auto data = alloc_n_copy(rhs.begin(),rhs.end());
     free();
     elements = data.first;
@@ -116,19 +118,7 @@ void print_simstr(const SimStr &s){
     cout << "size(): " << s.size() << "  capacity(): " << s.capacity() << endl;
 }
 
-void foo(SimStr x){}
-
-void bar(const SimStr &x){}
-
-SimStr baz(){
-    SimStr ret("world");
-    return ret;
-}
-
-
-
 int main(){
-    /*
     //test char array constructor
     char ca[] = "jack";
     SimStr s1(ca);
@@ -147,24 +137,9 @@ int main(){
     //test assignment
     s1 = s2;
     print_simstr(s1);
-    */
-    SimStr s0;
-    SimStr s1("hello");
-    SimStr s2(s0);
-    SimStr s3 = s1;
-    s2 = s1;
-
-    foo(s1);
-    bar(s1);
-    foo("temporary");
-    bar("temporary");
-    SimStr s4 = baz();
-
-    vector<SimStr> svec;
-    svec.push_back(s0);
-    svec.push_back(s1);
-    svec.push_back(baz());
-    svec.push_back("good job");
+    //test copy constructor
+    SimStr s3(s1);
+    print_simstr(s3);
 
     return 0;
 }

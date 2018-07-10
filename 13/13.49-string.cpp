@@ -18,6 +18,7 @@ public:
     SimStr():elements(nullptr),first_free(nullptr),cap(nullptr){}
     SimStr(const char*);
     SimStr(const SimStr &);
+    SimStr(SimStr &&) noexcept;
     ~SimStr();
 
     size_t size() const {return first_free - elements;}
@@ -32,6 +33,7 @@ public:
     void push_back(const char &c);
 
     SimStr& operator= (const SimStr &);
+    SimStr& operator= (SimStr &&) noexcept;
 
 private:
     allocator<char> alloc; 
@@ -44,6 +46,24 @@ private:
     char* cap;
 
 };
+
+SimStr::SimStr(SimStr &&rhs) noexcept: elements(rhs.elements), first_free(rhs.first_free), cap(rhs.cap){   
+    cout <<  "in move constructor\n";
+    rhs.elements = rhs.first_free = rhs.cap = nullptr;
+}
+
+SimStr& SimStr::operator=(SimStr && rhs) noexcept{
+    cout << "in move assignment\n";
+    if(&rhs != this){
+        free();
+        elements = rhs.elements;
+        first_free = rhs.first_free;
+        cap = rhs.cap;
+        rhs.elements = rhs.first_free = rhs.cap = nullptr;
+    }
+    return *this;
+}
+
 
 void SimStr::push_back(const char &c){
     check_n_alloc();
@@ -96,12 +116,14 @@ SimStr::SimStr(const char *ca){
     first_free = cap = data.second;
 }
 SimStr::SimStr(const SimStr& rhs){
+    cout << "in copy constructor !\n";
     auto data = alloc_n_copy(rhs.begin(),rhs.end());
     elements = data.first;
     first_free = cap = data.second;
 }
 
 SimStr& SimStr::operator=(const SimStr &rhs){
+    cout << "in operator = function !!!\n";
     auto data = alloc_n_copy(rhs.begin(),rhs.end());
     free();
     elements = data.first;
@@ -116,55 +138,24 @@ void print_simstr(const SimStr &s){
     cout << "size(): " << s.size() << "  capacity(): " << s.capacity() << endl;
 }
 
-void foo(SimStr x){}
-
-void bar(const SimStr &x){}
-
-SimStr baz(){
-    SimStr ret("world");
-    return ret;
-}
-
-
-
 int main(){
-    /*
-    //test char array constructor
-    char ca[] = "jack";
-    SimStr s1(ca);
-    print_simstr(s1);
-    //test push_back()
-    s1.push_back(' ');
-    s1.push_back('a');
-    s1.push_back('n');
-    s1.push_back('d');
-    print_simstr(s1);
-    //test reallocate()
-    SimStr s2("to");
-    print_simstr(s2);
-    s2.push_back('m');
-    print_simstr(s2);
-    //test assignment
-    s1 = s2;
-    print_simstr(s1);
-    */
-    SimStr s0;
-    SimStr s1("hello");
-    SimStr s2(s0);
-    SimStr s3 = s1;
-    s2 = s1;
+    vector<SimStr> vs; 
+    cout << vs.size() << " " << vs.capacity() << endl; 
 
-    foo(s1);
-    bar(s1);
-    foo("temporary");
-    bar("temporary");
-    SimStr s4 = baz();
+    vs.push_back("hello");
+    cout << vs.size() << " " << vs.capacity() << endl; 
 
-    vector<SimStr> svec;
-    svec.push_back(s0);
-    svec.push_back(s1);
-    svec.push_back(baz());
-    svec.push_back("good job");
+    vs.push_back("world");
+    cout << vs.size() << " " << vs.capacity() << endl; 
 
+    vs.push_back("junk");
+    cout << vs.size() << " " << vs.capacity() << endl; 
+
+    vs.push_back("food");
+    cout << vs.size() << " " << vs.capacity() << endl; 
+    
+    SimStr s2("jack");
+    vs.push_back(s2);
+    cout << vs.size() << " " << vs.capacity() << endl; 
     return 0;
 }
